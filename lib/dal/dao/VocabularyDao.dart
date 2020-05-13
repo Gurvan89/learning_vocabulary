@@ -1,4 +1,5 @@
 import 'package:flutterapp/bo/Vocabulary.dart';
+import 'package:flutterapp/dal/dao/GroupDao.dart';
 import 'Dao.dart';
 
 class VocabularyDao extends Dao<Vocabulary> {
@@ -6,6 +7,7 @@ class VocabularyDao extends Dao<Vocabulary> {
   final columnReminder = 'reminder';
   final columnTranslation = 'translation';
   final columnIsArchived = 'is_archived';
+  final columnGroupId = 'group_id';
 
   VocabularyDao();
 
@@ -19,12 +21,13 @@ class VocabularyDao extends Dao<Vocabulary> {
       " $columnUpdatedAT INTEGER NOT NULL,"
       " $columnWordToLearn TEXT NOT NULL,"
       " $columnReminder TEXT NOT NULL,"
-      " $columnTranslation TEXT NOT NULL)";
+      " $columnIsArchived INTEGER DEFAULT 0 NOT NULL,"
+      " $columnTranslation TEXT NOT NULL,"
+      " $columnGroupId INTEGER"
+      "FOREIGN KEY($columnGroupId) REFERENCES group(id))";
 
-  String get updateV2 =>
-      "ALTER TABLE $tableName ADD $columnIsArchived INTEGER DEFAULT 0 NOT NULL";
+  int now = DateTime.now().millisecondsSinceEpoch;
 
-  int now=DateTime.now().millisecondsSinceEpoch;
   String get insert => "INSERT "
       "INTO $tableName ($columnCreatedAT,$columnUpdatedAT,$columnWordToLearn,$columnReminder,$columnTranslation) "
       "VALUES"
@@ -40,16 +43,12 @@ class VocabularyDao extends Dao<Vocabulary> {
   @override
   Vocabulary fromMap(Map<String, dynamic> query) {
     Vocabulary v = new Vocabulary(
-        query[columnWordToLearn],
-        query[columnReminder],
-        query[columnTranslation],
-        query[columnIsArchived] == 1 ? true : false);
-    v.id = query[columnId];
-    v.createdAt =
-        new DateTime.fromMicrosecondsSinceEpoch(query[columnCreatedAT]);
-    v.updatedAt =
-        new DateTime.fromMicrosecondsSinceEpoch(query[columnUpdatedAT]);
-    return v;
+        wordToLearn: query[columnWordToLearn],
+        reminder: query[columnReminder],
+        translation: query[columnTranslation],
+        groupId: query[columnGroupId],
+        isArchived: query[columnIsArchived] == 1 ? true : false);
+    return setBaseObject(v, query);
   }
 
   @override
@@ -60,16 +59,8 @@ class VocabularyDao extends Dao<Vocabulary> {
       columnTranslation: v.translation,
       columnUpdatedAT: v.updatedAt.millisecondsSinceEpoch,
       columnCreatedAT: v.createdAt.millisecondsSinceEpoch,
+      columnGroupId: v.groupId,
       columnIsArchived: v.isArchived ? 1 : 0,
     };
-  }
-
-  @override
-  List<Vocabulary> fromList(List<Map<String, dynamic>> query) {
-    List<Vocabulary> v = List<Vocabulary>();
-    for (Map map in query) {
-      v.add(fromMap(map));
-    }
-    return v;
   }
 }

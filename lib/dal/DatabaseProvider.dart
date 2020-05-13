@@ -1,3 +1,5 @@
+import 'package:flutterapp/bo/Group.dart';
+import 'package:flutterapp/dal/dao/GroupDao.dart';
 import 'package:flutterapp/dal/dao/VocabularyDao.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -21,20 +23,18 @@ class DatabaseProvider {
     String path = join(databasesPath, DATABASE_NAME);
 
     _db = await openDatabase(path,
-        version: 2, onCreate: _create, onUpgrade: _upgrade);
-
+        version: 1, onCreate: _create, onUpgrade: _upgrade);
 
   }
 
   _create(Database db, int version) async {
+    //group dao must be the first query because of the foreign key in table vocabulary
+    await db.execute(GroupDao().createTableQuery);
     await db.execute(VocabularyDao().createTableQuery);
-    await db.execute(VocabularyDao().updateV2);
     await db.execute(VocabularyDao().insert);
   }
 
   void _upgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < newVersion) {
-      await db.execute(VocabularyDao().updateV2);
-    }
+    //TODO to upgrade database;
   }
 }

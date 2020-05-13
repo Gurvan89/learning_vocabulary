@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterapp/bll/VocabularyService.dart';
 import 'package:flutterapp/bo/Vocabulary.dart';
+import 'package:flutterapp/views/GroupMenu.dart';
 import 'VocabularyCard.dart';
 import 'VocabularyForm.dart';
 
@@ -80,10 +81,12 @@ class _VocabulariesPageState extends State<VocabulariesPage> {
     return new DefaultTabController(
         length: 2,
         child: Scaffold(
+          drawer: new GroupMenu(),
           appBar: AppBar(
             // Here we take the value from the MyHomePage object that was created by
             // the App.build method, and use it to set our appbar title.
             title: Text("Vocabulary list"),
+            centerTitle: true,
             bottom: TabBar(
               tabs: [
                 Tab(text: "To learn", icon: Icon(Icons.format_list_bulleted)),

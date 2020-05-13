@@ -15,6 +15,8 @@ class VocabularyCard extends StatelessWidget {
         children: <Widget>[
           ListTile(
             title: Text(vocabulary.wordToLearn),
+            subtitle: Text(vocabulary.lastUpdatedAtToString,
+                style: TextStyle(fontSize: 9)),
             enabled: enabled,
             onTap: () => _showToast(context, vocabulary.reminder),
             onLongPress: () => _showToast(context, vocabulary.translation),

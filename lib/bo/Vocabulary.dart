@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutterapp/bo/BaseObject.dart';
 
 class Vocabulary extends BaseObject {
@@ -5,17 +6,19 @@ class Vocabulary extends BaseObject {
   String reminder;
   String translation;
   bool isArchived;
+  int groupId;
 
   Vocabulary(
-      [this.wordToLearn,
-      this.reminder,
-      this.translation,
-      this.isArchived = false])
+      {@required this.wordToLearn,
+      @required this.reminder,
+      @required this.translation,
+      this.isArchived = false,
+      this.groupId})
       : super();
 
   @override
   String toString() {
     return super.toString() +
-        "word to learn : $wordToLearn, reminder = $reminder, translation : $translation, is archived : $isArchived";
+        "word to learn : $wordToLearn, reminder = $reminder, translation : $translation, is archived : $isArchived, groupId :$groupId";
   }
 }
